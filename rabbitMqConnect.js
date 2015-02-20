@@ -7,7 +7,11 @@
 
     rabbitMqConnect.configure = function (queueUri, queueName) {
         _queueName = queueName;
-        _queueUri = queueUri;
+        
+        if (queueUri) {
+            _queueUri = queueUri;
+
+        }
     };
 
     function connect(callback) {
