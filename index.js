@@ -78,7 +78,7 @@
 
         return rabbitMqConnect.receive(function(msg) {
 
-            if (!msg || msg.messageType !== "logging") {
+            if (!msg || msg.messageType !== messageName) {
                 return;
             }
 
