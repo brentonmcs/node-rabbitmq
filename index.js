@@ -1,13 +1,13 @@
 (function(rabbitMqConnect) {
     "use strict";
-    
+
     var amqp = require('amqplib');
     var _queueUri = "amqp://localhost";
     var _queueName = "default";
 
-    rabbitMqConnect.configure = function (queueUri, queueName) {
+    rabbitMqConnect.configure = function(queueUri, queueName) {
         _queueName = queueName;
-        
+
         if (queueUri) {
             _queueUri = queueUri;
 
@@ -70,6 +70,18 @@
 
     rabbitMqConnect.receiveJson = function(callback) {
         return rabbitMqConnect.receive(function(msg) {
+            callback(JSON.parse(msg.content.toString()));
+        });
+    };
+
+    rabbitMqConnect.receiveJsonMessage = function(messageName, callback) {
+
+        return rabbitMqConnect.receive(function(msg) {
+
+            if (!msg || message.msg !== "logging") {
+                return;
+            }
+
             callback(JSON.parse(msg.content.toString()));
         });
     };
