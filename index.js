@@ -1,93 +1,35 @@
-(function(rabbitMqConnect) {
-    "use strict";
+"use strict";
 
-    var amqp = require('amqplib');
-    var _queueUri = "amqp://localhost";
-    var _queueName = "default";
+var amqp = require("amqplib/callback_api");
+var Rabbit = require("./lib/rabbitMq");
+var rabbit = null;
 
-    rabbitMqConnect.configure = function(queueUri, queueName) {
-        _queueName = queueName;
+function RabbitMqConnect(queueUri, queueName) {
+    console.log("constructed");
+    rabbit = new Rabbit(queueUri, queueName, amqp);
+}
 
-        if (queueUri) {
-            _queueUri = queueUri;
+RabbitMqConnect.prototype.receive = function(callback, done) {
+    rabbit.receive(callback, done);
+};
 
-        }
-    };
+RabbitMqConnect.prototype.receiveJson = function(callback, done) {
+    rabbit.receiveJson(callback, done);
+};
 
-    function connect(callback) {
-        amqp.connect(_queueUri).then(function(conn) {
+RabbitMqConnect.prototype.receiveJsonMessage = function(messageName, callback, done) {
+    rabbit.receiveJsonMessage(messageName, callback, done);
+};
 
-            process.setMaxListeners(0);
-            process.once("SIGINT", function() {
-                conn.close();
-            });
+RabbitMqConnect.prototype.sendMessage = function(message) {
+    rabbit.sendMessage(message);
+};
 
-            return conn.createChannel().then(function(ch) {
+RabbitMqConnect.prototype.sendJson = function(message) {
+    rabbit.sendJson(message);
+};
 
-                var ok = ch.assertExchange(_queueName, "fanout", {
-                    durable: false
-                });
-
-                ok.then(function() {
-                    callback(ok, ch);
-                });
-            });
-        }).then(null, console.warn);
-    }
-
-    function send(message) {
-        connect(function(ok, ch) {
-            return ok.then(function() {
-                ch.publish(_queueName, "", new Buffer(message));
-                return ch.close();
-            });
-        });
-    }
-
-    rabbitMqConnect.receive = function(callback) {
-
-        connect(function(ok, ch) {
-
-            ok = ok.then(function() {
-                return ch.assertQueue("", {
-                    exclusive: true
-                });
-            });
-
-            ok = ok.then(function(qok) {
-                return ch.bindQueue(qok.queue, _queueName, "").then(function() {
-                    return qok.queue;
-                });
-            });
-
-            ok.then(function(queue) {
-                return ch.consume(queue, callback, {
-                    noAck: true
-                });
-            });
-        });
-    };
-
-    rabbitMqConnect.receiveJson = function(callback) {
-        return rabbitMqConnect.receive(function(msg) {
-            callback(JSON.parse(msg.content.toString()));
-        });
-    };
-
-    rabbitMqConnect.receiveJsonMessage = function(messageName, callback) {
-
-        return rabbitMqConnect.receive(function(msg) {
-
-            if (!msg || msg.messageType !== messageName) {
-                return;
-            }
-
-            callback(JSON.parse(msg.content.toString()));
-        });
-    };
-
-    rabbitMqConnect.sendJson = function(message) {
-        send(JSON.stringify(message));
-    };
-
-})(module.exports);
+RabbitMqConnect.prototype.closeChannel = function() {
+    rabbit.closeChannel();
+};
+module.exports = RabbitMqConnect;
