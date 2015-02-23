@@ -7,10 +7,10 @@ describe('a single message is received', function() {
     var rabbit;
     var expectedMessage = 'test message';
 
-    beforeEach(function() {    
+    beforeEach(function() {
         rabbit = new Rabbit(null, new Date().getTime().toString());
     });
-    
+
     it('received message should match the sent one', function(done) {
         rabbit.receiveJson(function(message) {
             message.message.should.be.exactly(expectedMessage);
@@ -42,17 +42,63 @@ describe('a single message is received', function() {
                     message: expectedMessage
                 });
                 i++;
-            }        
+            }
         });
 
         setTimeout(function() {
             if (count === totalMessages) {
-            done();
+                done();
 
             } else {
                 done('wrong number of messages ' + count);
             }
         }, 100);
+    });
+
+    it('received two messages should match the sent ones', function(done) {
+
+        var count = 0,
+            oneCount = 0,
+            twoCount = 0;
+        var totalMessages = 10;
+        rabbit.receiveJson(function(message) {
+
+            count++;
+
+            if (message.message === expectedMessage + '1') {
+                oneCount++;
+            }
+            if (message.message === expectedMessage + '2') {
+                twoCount++;
+            }
+
+            if (count > totalMessages  * 2) {
+                done('too many messages');
+            }
+        }, function() {
+
+            var i = 0;
+
+            while (i < totalMessages) {
+                rabbit.sendJson({
+                    message: expectedMessage + '1'
+                });
+
+                rabbit.sendJson({
+                    message: expectedMessage + '2'
+                });
+                i++;
+            }
+        });
+
+        setTimeout(function() {
+            if (count === (totalMessages  * 2) && oneCount === totalMessages && twoCount === totalMessages) {
+                done();
+
+            } else {
+                done('wrong number of messages ' + count + 'one count:' + oneCount + ' twoCount' + twoCount);
+            }
+        }, 120);
     });
 
     it('should only show message types I am interested in', function(done) {

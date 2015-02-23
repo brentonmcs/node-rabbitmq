@@ -80,16 +80,18 @@ describe('Sending messages on the queue', function() {
         chMock.expects('assertExchange').once().withArgs('test', 'fanout', {
             durable: false
         });
-        rabbit.emit('JoinedChannel', channel, 'Send');
+        rabbit.emit('JoinedChannel', channel, {
+            returnEvent: 'Send'
+        });
 
         chMock.verify();
     });
 
     it('should call connected and publish', function() {
         chMock.expects('publish').withArgs('test');
-        rabbit.sendMessage('test');
-
-        rabbit.emit('ConnectedSend', channel);
+        rabbit.emit('ConnectedSend', channel, null, {
+            message: 'test'
+        });
         chMock.verify();
     });
 });
