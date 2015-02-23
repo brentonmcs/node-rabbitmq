@@ -7,17 +7,14 @@ describe('a single message is received', function() {
     var rabbit;
     var expectedMessage = 'test message';
 
-    beforeEach(function() {
-        rabbit = new Rabbit(null, 'PickTheLadder');
+    beforeEach(function() {    
+        rabbit = new Rabbit(null, new Date().getTime().toString());
     });
-
-    afterEach(function() {
-        rabbit.closeChannel();
-    });
-
+    
     it('received message should match the sent one', function(done) {
         rabbit.receiveJson(function(message) {
             message.message.should.be.exactly(expectedMessage);
+            rabbit.closeChannel();
             done();
         }, function() {
             rabbit.sendJson({
@@ -29,12 +26,12 @@ describe('a single message is received', function() {
     it('received message should match the sent one', function(done) {
 
         var count = 0;
-        var totalMessages = 100;
+        var totalMessages = 10;
         rabbit.receiveJson(function() {
             count++;
 
-            if (count === totalMessages) {
-                done();
+            if (count > totalMessages) {
+                done('too many messages');
             }
         }, function() {
 
@@ -47,6 +44,15 @@ describe('a single message is received', function() {
                 i++;
             }        
         });
+
+        setTimeout(function() {
+            if (count === totalMessages) {
+            done();
+
+            } else {
+                done('wrong number of messages ' + count);
+            }
+        }, 100);
     });
 
     it('should only show message types I am interested in', function(done) {
