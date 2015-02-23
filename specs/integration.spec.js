@@ -26,6 +26,28 @@ describe('a single message is received', function() {
         });
     });
 
+    it('received message should match the sent one', function(done) {
+
+        var count = 0;
+        var totalMessages = 100;
+        rabbit.receiveJson(function() {
+            count++;
+
+            if (count === totalMessages) {
+                done();
+            }
+        }, function() {
+
+            var i = 0;
+
+            while (i < totalMessages) {
+                rabbit.sendJson({
+                    message: expectedMessage
+                });
+                i++;
+            }        
+        });
+    });
 
     it('should only show message types I am interested in', function(done) {
         rabbit.receiveJsonMessage('infoLog', function(message) {
@@ -51,6 +73,6 @@ describe('a single message is received', function() {
 
         setTimeout(function() {
             done();
-        }, 100);
+        }, 60);
     });
 });

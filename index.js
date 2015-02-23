@@ -5,7 +5,6 @@ var Rabbit = require("./lib/rabbitMq");
 var rabbit = null;
 
 function RabbitMqConnect(queueUri, queueName) {
-    console.log("constructed");
     rabbit = new Rabbit(queueUri, queueName, amqp);
 }
 

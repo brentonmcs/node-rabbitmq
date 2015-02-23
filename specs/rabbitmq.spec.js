@@ -3,7 +3,7 @@
 var Rabbit = require('../lib/rabbitMq');
 var sinon = require('sinon');
 
-require('should');
+var assert = require('chai').assert;
 
 var defaultUri = 'amqp://localhost';
 
@@ -13,18 +13,18 @@ describe('Configure should set values', function() {
 
         var expected = 'test';
         var rabbit = new Rabbit(null, expected);
-        rabbit.queueName().should.be.exactly(expected);
+        assert.equal(rabbit.queueName(), expected);
     });
 
     it('should not set Queue Uri if null', function() {
         var rabbit = new Rabbit(null, 'test');
-        rabbit.queueUri().should.be.exactly(defaultUri);
+        assert.equal(rabbit.queueUri(), defaultUri);
     });
 
     it('should set Queue Uri if not null', function() {
         var expected = 'notlocal:8000';
         var rabbit = new Rabbit(expected, 'test');
-        rabbit.queueUri().should.be.exactly(expected);
+        assert.equal(rabbit.queueUri(), expected);
     });
 });
 
@@ -54,14 +54,14 @@ describe('Sending messages on the queue', function() {
         rabbit = new Rabbit(defaultUri, 'test', amqp);
     });
 
-    afterEach(function () {
+    afterEach(function() {
         mock.restore();
     });
 
     it('should call connect', function() {
         mock.expects('connect').once();
         rabbit.sendMessage('test');
-        mock.verify();        
+        mock.verify();
     });
 
     it('should use the correct queue name', function() {
@@ -92,13 +92,4 @@ describe('Sending messages on the queue', function() {
         rabbit.emit('ConnectedSend', channel);
         chMock.verify();
     });
-
-    it('should call connected and close connection', function() {
-        chMock.expects('close').once();
-        rabbit.sendMessage('test');
-        
-        rabbit.emit('ConnectedSend', channel);
-        chMock.verify();
-    });
-
 });
