@@ -26,7 +26,7 @@ describe('sending and receiving messages (fanout mode)', function() {
     it('received message should match the sent one', function(done) {
 
         var count = 0;
-        var totalMessages = 300;
+        var totalMessages = 200;
         rabbit.receiveJson(function() {
             count++;
 
@@ -56,7 +56,7 @@ describe('sending and receiving messages (fanout mode)', function() {
             } else {
                 done('wrong number of messages ' + count);
             }
-        }, 1900);
+        }, 1000);
     });
 
     it('received two messages should match the sent ones', function(done) {
