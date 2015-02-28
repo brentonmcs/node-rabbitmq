@@ -4,8 +4,8 @@ var amqp = require("amqplib/callback_api");
 var Rabbit = require("./lib/rabbitMq");
 var rabbit = null;
 
-function RabbitMqConnect(queueUri, queueName) {
-    rabbit = new Rabbit(queueUri, queueName, amqp);
+function RabbitMqConnect(queueUri, queueName, deleteQueue) {
+    rabbit = new Rabbit(queueUri, queueName, amqp, deleteQueue);
 }
 
 RabbitMqConnect.prototype.receive = function(callback, done) {

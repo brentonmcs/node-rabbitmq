@@ -8,7 +8,7 @@ describe('sending and receiving messages (fanout mode)', function() {
     var expectedMessage = 'test message';
 
     beforeEach(function() {
-        rabbit = new Rabbit(null, new Date().getTime().toString());
+        rabbit = new Rabbit(null, new Date().getTime().toString(),false);
     });
 
     it('sendt message should be received', function(done) {
@@ -26,7 +26,7 @@ describe('sending and receiving messages (fanout mode)', function() {
     it('received message should match the sent one', function(done) {
 
         var count = 0;
-        var totalMessages = 10;
+        var totalMessages = 300;
         rabbit.receiveJson(function() {
             count++;
 
@@ -41,7 +41,11 @@ describe('sending and receiving messages (fanout mode)', function() {
                 rabbit.sendJson({
                     message: expectedMessage
                 });
-                i++;
+                i++;                
+
+                setTimeout(function () {
+
+                }, 10);
             }
         });
 
@@ -52,7 +56,7 @@ describe('sending and receiving messages (fanout mode)', function() {
             } else {
                 done('wrong number of messages ' + count);
             }
-        }, 100);
+        }, 1900);
     });
 
     it('received two messages should match the sent ones', function(done) {

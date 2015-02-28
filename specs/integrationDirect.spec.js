@@ -9,7 +9,7 @@ describe('sending and receiving messages (direct mode)', function() {
     var expectedMessage = 'test message';
 
     beforeEach(function() {
-        rabbit = new Rabbit(null, new Date().getTime().toString());
+        rabbit = new Rabbit(null, new Date().getTime().toString(),true);
     });
 
     it('received message should match the sent one', function(done) {
