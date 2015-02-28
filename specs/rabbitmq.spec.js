@@ -79,9 +79,7 @@ describe('Sending messages on the queue', function() {
     });
 
     it('should call Assert Exchange', function() {
-        chMock.expects('assertExchange').once().withArgs('test', 'fanout', {
-            durable: false
-        });
+        chMock.expects('assertExchange').once().withArgs('test', 'fanout');
         rabbit.emit('JoinedChannel', {
             ch: channel,
             returnEvent: 'Send',
