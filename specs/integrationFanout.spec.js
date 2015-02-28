@@ -1,8 +1,8 @@
 'use strict';
 require('should');
-describe('a single message is received', function() {
+describe('sending and receiving messages (fanout mode)', function() {
 
-    var Rabbit = require('../index');
+    var Rabbit = require('../');
 
     var rabbit;
     var expectedMessage = 'test message';
@@ -11,7 +11,7 @@ describe('a single message is received', function() {
         rabbit = new Rabbit(null, new Date().getTime().toString());
     });
 
-    it('received message should match the sent one', function(done) {
+    it('sendt message should be received', function(done) {
         rabbit.receiveJson(function(message) {
             message.message.should.be.exactly(expectedMessage);
             rabbit.closeChannel();

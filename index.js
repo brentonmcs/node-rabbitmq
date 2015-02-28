@@ -20,12 +20,16 @@ RabbitMqConnect.prototype.receiveJsonMessage = function(messageName, callback, d
     rabbit.receiveJsonMessage(messageName, callback, done);
 };
 
-RabbitMqConnect.prototype.sendMessage = function(message) {
-    rabbit.sendMessage(message);
+RabbitMqConnect.prototype.receiveDirectMessage = function(messageRoute, callback, done) {
+	rabbit.receiveDirectMessage(messageRoute, callback, done);
 };
 
-RabbitMqConnect.prototype.sendJson = function(message) {
-    rabbit.sendJson(message);
+RabbitMqConnect.prototype.sendMessage = function(message, messageRoute) {
+    rabbit.sendMessage(message, messageRoute);
+};
+
+RabbitMqConnect.prototype.sendJson = function(message, messageRoute) {
+    rabbit.sendJson(message, messageRoute);
 };
 
 RabbitMqConnect.prototype.closeChannel = function() {

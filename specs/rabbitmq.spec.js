@@ -72,7 +72,9 @@ describe('Sending messages on the queue', function() {
 
     it('should call Create Channel', function() {
         connMock.expects('createChannel').once();
-        rabbit.emit('JoinChannel', conn, 'Send');
+        rabbit.emit('JoinChannel', {
+            conn: conn
+        });
         connMock.verify();
     });
 
@@ -80,8 +82,12 @@ describe('Sending messages on the queue', function() {
         chMock.expects('assertExchange').once().withArgs('test', 'fanout', {
             durable: false
         });
-        rabbit.emit('JoinedChannel', channel, {
-            returnEvent: 'Send'
+        rabbit.emit('JoinedChannel', {
+            ch: channel,
+            returnEvent: 'Send',
+            queueOptions: {
+                queueMode: 'fanout'
+            }
         });
 
         chMock.verify();
@@ -89,8 +95,13 @@ describe('Sending messages on the queue', function() {
 
     it('should call connected and publish', function() {
         chMock.expects('publish').withArgs('test');
-        rabbit.emit('ConnectedSend', channel, null, {
-            message: 'test'
+        rabbit.emit('ConnectedSend', {
+            ch: channel,
+            message: 'test',
+            queueOptions: {
+                queueMode: 'fanout',
+                messageRoute: ''
+            }
         });
         chMock.verify();
     });
