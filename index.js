@@ -1,6 +1,5 @@
 "use strict";
 
-var amqp = require("amqplib/callback_api");
 var Rabbit = require("./lib/rabbit");
 var rabbit = null;
 
