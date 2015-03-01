@@ -1,38 +1,21 @@
 "use strict";
 
 var amqp = require("amqplib/callback_api");
-var Rabbit = require("./lib/rabbitMq");
+var Rabbit = require("./lib/rabbit");
 var rabbit = null;
 
-function RabbitMqConnect(queueUri, queueName, deleteQueue) {
-    rabbit = new Rabbit(queueUri, queueName, amqp, deleteQueue);
+function RabbitMqConnect(queueUri, callback) {
+    rabbit = new Rabbit(queueUri, callback);
 }
 
-RabbitMqConnect.prototype.receive = function(callback, done) {
-    rabbit.receive(callback, done);
-};
 
-RabbitMqConnect.prototype.receiveJson = function(callback, done) {
+RabbitMqConnect.prototype.receiveJson = function(routeName, callback) {
     rabbit.receiveJson(callback, done);
 };
 
-RabbitMqConnect.prototype.receiveJsonMessage = function(messageName, callback, done) {
-    rabbit.receiveJsonMessage(messageName, callback, done);
+
+RabbitMqConnect.prototype.sendJson = function(message, routeName) {
+    rabbit.sendJson(message, routeName  );
 };
 
-RabbitMqConnect.prototype.receiveDirectMessage = function(messageRoute, callback, done) {
-	rabbit.receiveDirectMessage(messageRoute, callback, done);
-};
-
-RabbitMqConnect.prototype.sendMessage = function(message, messageRoute) {
-    rabbit.sendMessage(message, messageRoute);
-};
-
-RabbitMqConnect.prototype.sendJson = function(message, messageRoute) {
-    rabbit.sendJson(message, messageRoute);
-};
-
-RabbitMqConnect.prototype.closeChannel = function() {
-    rabbit.closeChannel();
-};
 module.exports = RabbitMqConnect;
