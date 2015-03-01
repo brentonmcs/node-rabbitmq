@@ -13,9 +13,9 @@ describe('sends and receives messages', function () {
     it('should receive messages', function (done) {
 
         var testMsg = 'adawdwa';
-        rabbit.receiveJson('testQueue', function (message) {
+        rabbit.receiveJson('testQueue', function (message, that) {
             JSON.parse(message).message.should.be.exactly(testMsg);
-            this.ack();
+            that.ack();
             done();
         });
 
@@ -29,10 +29,10 @@ describe('sends and receives messages', function () {
 
         rabbit.sendJson({message: testMsg}, 'testQueue2');
 
-        rabbit.receiveJson('testQueue2', function (message) {
+        rabbit.receiveJson('testQueue2', function (message, that) {
             var json = JSON.parse(message);
             json.message.should.be.exactly(testMsg);
-            this.ack();
+            that.ack();
             done();
         });
 
@@ -52,8 +52,8 @@ describe('sends and receives messages', function () {
         rabbit.sendJson({message: testMsg}, routeName);
 
         var i = 0;
-        rabbit.receiveJson(routeName, function () {
-            this.ack();
+        rabbit.receiveJson(routeName, function (message, that) {
+            that.ack();
             i++;
 
             if (i === 5) {
@@ -91,8 +91,8 @@ describe('sends and receives messages', function () {
             }
         };
 
-        rabbit.receiveJson(q, function () {
-                recMessage(this, function () {
+        rabbit.receiveJson(q, function (message, that) {
+                recMessage(that, function () {
                     b++;
                 })
             }
@@ -101,8 +101,8 @@ describe('sends and receives messages', function () {
         var rabbit2 = new RabbitJs("amqp://localhost", function () {
 
 
-            rabbit2.receiveJson(q, function () {
-                recMessage(this, function () {
+            rabbit2.receiveJson(q, function (message, that) {
+                recMessage(that, function () {
                     a++;
                 });
             });
@@ -115,8 +115,8 @@ describe('sends and receives messages', function () {
         var rabbit3 = new RabbitJs("amqp://localhost", function () {
 
 
-            rabbit3.receiveJson(q, function () {
-                recMessage(this, function () {
+            rabbit3.receiveJson(q, function (message, that) {
+                recMessage(that, function () {
                     a++;
                 });
             });
