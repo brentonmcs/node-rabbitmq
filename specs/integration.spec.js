@@ -63,6 +63,23 @@ describe('sends and receives messages', function () {
 
 
     });
+    it('does not send wrong message to queue', function (done) {
+        rabbit.receiveJson('test999', function (message, that) {
+            that.ack();
+            done('should not have received this');
+        });
+
+        rabbit.sendJson({}, 'test9');
+
+        setTimeout(function () {
+
+            rabbit.receiveJson('test9', function (message, that) {
+                that.ack();
+                done();
+            });
+        }, 30);
+
+    });
 
     it('send multiple messages to different queues', function (done) {
 
@@ -127,4 +144,6 @@ describe('sends and receives messages', function () {
         });
 
     });
+
+
 });
