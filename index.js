@@ -9,7 +9,7 @@ function RabbitMqConnect(queueUri, callback) {
 
 
 RabbitMqConnect.prototype.receiveJson = function(routeName, callback) {
-    rabbit.receiveJson(callback, done);
+    rabbit.receiveJson(routeName, callback);
 };
 
 
