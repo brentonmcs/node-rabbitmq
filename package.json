@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ptl-config": "git+https://git@bitbucket.org:brentonmcs/ptl-config.git",
     "rabbit.js": "^0.4.2"
   },
   "devDependencies": {
